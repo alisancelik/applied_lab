@@ -6,7 +6,26 @@ import QtQuick.Layouts 1.3
 Item {
     width: 300
     height: 400
+    QtObject{
 
+            id:priv
+            property variant passcode: [1,2,3,4]
+            property int inputIndex: -1
+            property bool unlocked: false
+            property bool programming: false
+
+            function unlock()
+            {
+                priv.unlocked=true;
+            }
+
+        }
+
+    function startUnlocking()
+    {
+        priv.inputIndex=0;
+        priv.unlocked=false;
+    }
 
     Rectangle{
         anchors.fill: parent
