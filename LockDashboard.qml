@@ -19,6 +19,12 @@ Item {
                 priv.unlocked=true;
             }
 
+            onUnlockedChanged: {
+                priv.programming=false;
+            }
+
+            property variant newPasscode: [1,2,3,4]
+
         }
 
     function startUnlocking()
@@ -33,29 +39,60 @@ Item {
         priv.unlocked=false;
     }
 
+    function startProgramming()
+    {
+       if(priv.unlocked==true)
+       {
+            priv.programming=true;
+            priv.inputIndex=0;
+       }
+    }
+
     function numberInput(number)
     {
         if(priv.inputIndex<0)
         {
             return
         }
-        if(number!==priv.passcode[priv.inputIndex])
-        {
-            lock();
-            return
-         }
-         if(number===priv.passcode[priv.inputIndex])
-         {
-             if(priv.inputIndex==3)
-             {
-                 priv.unlock();
-             }
-             else
-             {
-                 priv.inputIndex++
-             }
 
-         }
+        else
+        {
+            if(priv.programming)
+            {
+                priv.newPasscode[priv.inputIndex]=number;
+            }
+            else{
+
+                if(number!==priv.passcode[priv.inputIndex])
+                {
+                    lock();
+                    return
+                 }
+            }
+
+            if(priv.inputIndex==3)
+            {
+               if(priv.programming)
+               {
+                   for(var i=0;i<4;i++)
+                    {
+                        priv.passcode[i]=priv.newPasscode[i];
+                    }
+
+                   lock()
+
+                 }
+               else{
+                   priv.unlock();
+                   }
+              }
+
+            else
+            {
+                priv.inputIndex++
+            }
+
+        }
 
 
     }
@@ -92,7 +129,6 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     active: priv.programming
                 }
-
 
             }
         }
